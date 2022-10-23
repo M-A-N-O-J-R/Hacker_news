@@ -1,0 +1,138 @@
+*{
+    border: 0px;
+    margin: 0px;
+    
+}
+.container{
+    max-width: 1150px;
+    background-color: #F6F6EF;
+    margin-bottom:20px;
+}
+.navbar{
+
+    color:black;
+    list-style: none;
+    margin-top: 10px;
+    background-color: #FF6600;
+    font-size: 13px;
+    line-height: 12px;
+    font-weight: 400;
+    padding: 2px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 2px;
+}
+li a{
+    color: black;
+    text-decoration: none;
+    margin-right: 12px;
+}
+#pro_logo
+{
+    border: 1px solid white;
+}
+#pro_name
+{
+   font-size: 14px;
+   font-weight: 700;
+}
+#login{
+    margin-left:auto;
+}
+.nav_item{
+    padding-left: 8px;
+    border-right: 1px solid black;
+}
+li a:hover{
+    color: black;
+    text-decoration: none;
+    margin-right: 12px;
+}
+.curr_item a{
+    color:white;
+}
+.story_item{
+    display: flex;
+    flex-direction: column;
+}
+.item_row1,.item_row2{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.item_row1{
+    padding: 1px;
+    line-height: 1px;
+}
+.item_row2 p a{
+    font-size: 10px;
+    color:rgb(154,154,154);
+    
+}
+.item_row2 p span{
+    font-size: 10px;
+    color:rgb(154,154,154);
+    margin-right: 5px;
+}
+.item_row2 p a:hover{
+    font-size: 10px;
+    color:rgb(154,154,154);
+    text-decoration: underline;
+}
+.story_cont{
+    background-color: #F6F6EF;
+    margin: 12px;
+    margin-top: 20px;
+    padding: 5px;
+}
+span a{
+    text-decoration: none;
+    color: black;
+    font-size: 13px;
+    margin-right: 5px;
+}
+span a:hover{
+    text-decoration: none;
+    color: black;
+    font-size: 13px;
+    
+}
+span a:visited{
+    
+    color: rgb(154,154,154);
+    
+}
+p a{
+    text-decoration: none;
+    color: black;
+    font-size: 14px;
+    margin-right: 5px;
+}
+p a:hover{
+    text-decoration: none;
+    color: black;
+    font-size: 14px;
+    
+}
+.item_row1 #story_domain a{
+    font-size: 11px;
+    color:rgb(154,154,154);
+}
+.item_row1 #story_domain a:hover{
+    cursor: pointer;
+    text-decoration: underline;
+}
+#btn_more{
+    background-color:#F6F6EF;
+    margin-right: 94%;
+    margin-bottom: 13px;
+    font-size: 13px;
+    border: none;
+}
+#btn_more:hover{
+    cursor: pointer;
+}
+button:focus {
+    outline: none;
+  }

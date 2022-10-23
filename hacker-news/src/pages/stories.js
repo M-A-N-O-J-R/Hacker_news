@@ -1,9 +1,11 @@
 import React,{useState,useEffect} from 'react';
 import moment from 'moment'
+import './stories.css';
 
 function Stories() {
     
     const [currPage,setcurrPage]=useState(0);
+    var count=0;
     const [stories,setStories]=useState([]);
     const fetchData=()=>{
     
@@ -11,6 +13,7 @@ function Stories() {
         .then(response => response.json())
         .then(data => {
             
+            console.log(data);
             setStories(data.hits);
             setcurrPage(currPage+1);
         });
@@ -18,52 +21,61 @@ function Stories() {
     useEffect(() => {
         fetchData();
       }, []);
-
-      function convertUTCDateToLocalDate(date) {
-        var newDate = new Date(date.getTime()+date.getTimezoneOffset()*60*1000);
-    
-        var offset = date.getTimezoneOffset() / 60;
-        var hours = date.getHours();
-    
-        newDate.setHours(hours - offset);
-    
-        return newDate;   
+ 
+    const nextPage = ()=>{
+        fetchData();
     }
-
     const storiesDiv = stories.map((story)=>{
        
-       var localTime = new Date(story.created_at).toTimeString();
-       var dateArr = localTime.split(' ')
+       var localTime = new Date(story.created_at);
+       console.log(localTime);
+       localTime=localTime.toTimeString();
+       var dateArr = localTime.split(' ');
+       console.log(localTime);
        const time = moment(dateArr[0], "HH:mm:ss").fromNow();
+       count=count+1;
        return (
-       <div key={story.objectID
-       }>
-            <p>{story.title}</p>
-            <p>{story.points} point by </p>
-            <p>{story.author}</p>
-            <p>{time}</p>
-            
+       <div key={story.objectID} className="story_item">
+            <div className='item_row1'>
+                <p><span>{(currPage-1)*20+count}</span></p>
+                <span><a href={story.url}>{story.title}</a></span>
+                <span id="story_domain"><a>(youtube)</a></span>
+            </div>
+            <div className='item_row2'>
+                <p><span>{story.points} point by </span></p>
+                <p><span>{story.author}</span></p>
+                <p><a href="#l1">{time}</a></p>
+                <p className='item_row2_item'><a href="#l1">| hide</a></p>
+                <p className='item_row2_item'><a href="#l1">| past</a></p>
+                <p className='item_row2_item'><a href="#l1">| discuss</a></p>
+            </div>
+              
         </div>
         )
     })
     return(
-        <>
-            <div>
+        <div className='container'>
+            <div className='nav_cont'>
                 <nav className='navbar'>
-                    <li id="l1"><a href="#l1"><img src={'https://news.ycombinator.com/y18.gif'} alt="logo" className="img-responsive"/></a></li>
-                    <li><a href="#l1">Hacker News</a></li>
-                    <li><a href="#l1">new</a></li>
-                    <li><a href="#l1">past</a></li>
-                    <li><a href="#l1">comment</a></li>
-                    <li><a href="#l1">ask</a></li>
-                    <li><a href="#l1">show</a></li>
-                    <li><a href="#l1">jobs</a></li>
-                    <li><a href="#l1">submit</a></li>
-                    <li><a href="#l1">login</a></li>
+                    <li id="l1"><a href="#l1"><img src={'https://news.ycombinator.com/y18.gif'} alt="logo" id = "pro_logo"/></a></li>
+                    <li id="pro_name"><a href="#l1">Hacker News</a></li>
+                    <li className='nav_item curr_item'><a href="#l1">new</a></li>
+                    <li className='nav_item'><a href="#l1">past</a></li>
+                    <li className='nav_item'><a href="#l1">comment</a></li>
+                    <li className='nav_item'><a href="#l1">ask</a></li>
+                    <li className='nav_item'><a href="#l1">show</a></li>
+                    <li className='nav_item'><a href="#l1">jobs</a></li>
+                    <li className='nav_item'><a href="#l1">submit</a></li>
+                    <li id='login'><a href="#login">login</a></li>
                 </nav>
             </div>
-            {storiesDiv}
-        </>
+            <div className='story_cont'>
+                {storiesDiv}
+            </div>
+            <button id="btn_more" onClick={nextPage}>
+                More
+            </button>  
+        </div>
     );
 }
 
