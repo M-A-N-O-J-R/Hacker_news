@@ -9,7 +9,7 @@ function Stories() {
     const [stories,setStories]=useState([]);
     const fetchData=()=>{
     
-        fetch('https://hn.algolia.com/api/v1/search_by_date?tags=story&page='+currPage)
+        fetch('https://hn.algolia.com/api/v1/search_by_date?tags=story&hitsPerPage=30&page='+currPage)
         .then(response => response.json())
         .then(data => {
             
@@ -36,10 +36,10 @@ function Stories() {
        return (
        <div key={story.objectID} className="story_item">
             <div className='item_row1'>
-                <span className='item_row1_indx'>{(currPage-1)*20+count}.</span>
+                <span className='item_row1_indx'>{(currPage-1)*30+count}.</span>
                 <span className='item_row1_indx'>▲</span>
                 <span><a href={story.url}>{story.title}</a></span>
-                {story.url!==null?<span id="story_domain"><a>({url.host})</a></span>:<span id="story_domain"><a>null</a></span>}
+                {story.url!==null?<span id="story_domain"><a href={url.href}>({url.host})</a></span>:<span id="story_domain"><a>null</a></span>}
             </div>
             <div className='item_row2'>
                 <p><span>{story.points} point by </span></p>
