@@ -28,18 +28,18 @@ function Stories() {
     const storiesDiv = stories.map((story)=>{
        
        var localTime = new Date(story.created_at);
-       console.log(localTime);
-       localTime=localTime.toTimeString();
-       var dateArr = localTime.split(' ');
-       console.log(localTime);
-       const time = moment(dateArr[0], "HH:mm:ss").fromNow();
+       //console.log(localTime); 
+       const time = moment(localTime, "dddd, dd MMMM yyyy HH:mm:ss").fromNow();
+       //console.log(story.url);
+       const url = story.url !== null ? new URL(story.url):null;
        count=count+1;
        return (
        <div key={story.objectID} className="story_item">
             <div className='item_row1'>
-                <p><span>{(currPage-1)*20+count}</span></p>
+                <span className='item_row1_indx'>{(currPage-1)*20+count}.</span>
+                <span className='item_row1_indx'>▲</span>
                 <span><a href={story.url}>{story.title}</a></span>
-                <span id="story_domain"><a>(youtube)</a></span>
+                {story.url!==null?<span id="story_domain"><a>({url.host})</a></span>:<span id="story_domain"><a>null</a></span>}
             </div>
             <div className='item_row2'>
                 <p><span>{story.points} point by </span></p>

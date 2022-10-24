@@ -85,6 +85,8 @@ li a:hover{
     margin: 12px;
     margin-top: 20px;
     padding: 5px;
+    padding-bottom: 0px ;
+    margin-bottom: 0px;
 }
 span a{
     text-decoration: none;
@@ -123,6 +125,13 @@ p a:hover{
     cursor: pointer;
     text-decoration: underline;
 }
+.item_row1{
+    display: flex;
+    align-items: center;
+}
+.item_row2{
+    margin-left: 20px;
+}
 #btn_more{
     background-color:#F6F6EF;
     margin-right: 94%;
@@ -136,3 +145,8 @@ p a:hover{
 button:focus {
     outline: none;
   }
+.item_row1_indx{
+    color:rgb(154,154,154);
+    font-size: 13px;
+    margin-right: 4px;
+}
