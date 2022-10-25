@@ -13,7 +13,7 @@ function Stories() {
         .then(response => response.json())
         .then(data => {
             
-            console.log(data);
+            //console.log(data);
             setStories(data.hits);
             setcurrPage(currPage+1);
         });
@@ -30,6 +30,7 @@ function Stories() {
        var localTime = new Date(story.created_at);
        //console.log(localTime); 
        const time = moment(localTime, "dddd, dd MMMM yyyy HH:mm:ss").fromNow();
+       
        //console.log(story.url);
        const url = story.url !== null && story.url!=='' ? new URL(story.url):null;
        count=count+1;

@@ -9,14 +9,13 @@
     background-color: #F6F6EF;
     margin-bottom:20px;
 }
-.navbar{
+.navbar_2{
 
     color:black;
     list-style: none;
-    margin-top: 10px;
     background-color: #FF6600;
-    font-size: 13px;
-    line-height: 12px;
+    font-size: 18px;
+
     font-weight: 400;
     padding: 2px;
     display: flex;
@@ -29,14 +28,18 @@ li a{
     text-decoration: none;
     margin-right: 12px;
 }
-#pro_logo
+#pro_logo_2
 {
-    border: 1px solid white;
+    width: 55px;
 }
-#pro_name
+#pro_name_2
 {
-   font-size: 14px;
+   font-size: 18px;
    font-weight: 700;
+   display: flex;
+   align-items: flex-start;
+   justify-content: center;
+   flex-direction: column;
 }
 #login{
     margin-left:auto;
@@ -57,12 +60,12 @@ li a:hover{
     display: flex;
     flex-direction: column;
 }
-.item_row1,.item_row_2{
+.item_row_1,.item_row_2{
     display: flex;
     flex-direction: row;
     align-items: center;
 }
-.item_row1{
+.item_row_1{
     padding: 1px;
     line-height: 1px;
 }
@@ -101,9 +104,9 @@ span a:hover{
     font-size: 13px;
     
 }
-span a:visited{
+.item_row_1 span a:visited{
     
-    color: rgb(154,154,154);
+    color: rgb(0, 0, 0);
     
 }
 p a{
@@ -154,4 +157,59 @@ button:focus {
 }
 .drop_down{
     width: 120px;
+    font-size: 11px;
+}
+.search_cont{
+    margin-top: 20px;
+    display: flex;
+    align-items: center;  
+    font-size: 13px; 
+}
+.label_box
+{
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    width: 14%;
+    justify-content: center;
+}
+.res_cont{
+    margin-left: auto;
+    display: flex;
+    width: 25%;
+    font-size: 14px;
+}
+#search_box{
+    border:0px;
+    width: 100%;
+    padding: 8px;
+}
+.paginationBtns{
+    margin-top: 20px;
+    font-size: 12px;
+    width:80%;
+    height:40px;
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    
+}
+.paginationBtns a{
+    padding:10px;
+    margin:8px;
+    border-radius: 5px;
+    border:1px solid black;
+    cursor: pointer;
+}
+.paginationBtns a:hover{
+    padding:10px;
+    margin:8px;
+    border-radius: 4px;
+    border:1px solid rgb(138, 22, 22);
+    cursor: pointer;
+    background-color: rgb(213, 211, 211);
+}
+.paginationBtnsAct a{
+    background-color: rgb(1, 21, 30);
+    color: #F6F6EF;
 }

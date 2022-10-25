@@ -4,58 +4,64 @@ import './search.css';
 import 'react-dropdown/style.css';
 import Select from 'react-select';
 import DOMPurify from "dompurify";
+import ReactDOM from 'react-dom';
+import ReactPaginate from 'react-paginate';
 
 function Search() {
     
+
+    
     const [currPage,setcurrPage]=useState(0);
-    const [type,setType]=useState('All');
-    const [cat,setCat]=useState('Date');
-    const [dur,setDur]=useState('All Time');
+    const [totalPages,setTotalPages]=useState(0);
     const [query,setQuery]=useState('');
     const [results,setResult]=useState([]);
     const [res_time,setResponseTime]=useState(0);
     const [res_count,setResCount]=useState(0);
     const [selectedOpt,setSelectedOpt]=useState({value: '(story,comment)', label: 'All'});
     const [selectedOpt2,setSelectedOpt2]=useState({ value: 'search', label: 'Popularity' });
-    const [selectedOpt3,setSelectedOpt3]=useState('Strawberry');  
+    const [selectedOpt3,setSelectedOpt3]=useState({ value: 0, label: 'All time' });  
     const fetchData_query=()=>{
         
-        fetch(`http://hn.algolia.com/api/v1/${selectedOpt2.value}?&hitsPerPage=30&query=${query}&tags=${selectedOpt.value}`)
+        console.log(moment().valueOf()/1000);
+        var time_stamp=((moment().valueOf()/1000)-(selectedOpt3.value*60*60));
+        console.log(time_stamp);
+        fetch(`http://hn.algolia.com/api/v1/${selectedOpt2.value}?&hitsPerPage=30&query=${query}&tags=${selectedOpt.value}&page=${currPage}&numericFilters=created_at_i>=${time_stamp}`)
         .then(response => response.json())
         .then(data => {
             
             console.log(data);
+            setTotalPages(data.nbPages)
             setResult(data.hits);
             setResCount(data.nbHits);
             setResponseTime(data.processingTimeMS/1000);
-            setcurrPage(currPage+1);
         });
     }
     const fetchData=()=>{
         
-        fetch('http://hn.algolia.com/api/v1/search?&hitsPerPage=30&tags=(comment,story)')
+        fetch('http://hn.algolia.com/api/v1/search?&hitsPerPage=30&tags=(comment,story)&page='+currPage)
         .then(response => response.json())
         .then(data => {
 
-            console.log(data);
+            //console.log(data);
+            setTotalPages(data.nbPages)
             setResult(data.hits);
             setResponseTime(data.processingTimeMS/1000);
-            setcurrPage(currPage+1);
             setResCount(data.nbHits);
 
         });
     }
 
-    useEffect(() => {
-        fetchData();
-      }, []);
+      useEffect(() => {
+        fetchData_query();
+      }, [currPage]);
 
     useEffect(() => {
         fetchData_query();
-      }, [query,selectedOpt,selectedOpt2]);
+      }, [query,selectedOpt,selectedOpt2,selectedOpt3]);
  
-    const nextPage = ()=>{
-        fetchData();
+    const handlePageClick = ({selected})=>{
+        //console.log(selected);
+        setcurrPage(selected);
     }
 
     const handleChange = (event) => {
@@ -65,13 +71,17 @@ function Search() {
        
        var localTime = new Date(story.created_at); 
        const time = moment(localTime, "dddd, dd MMMM yyyy HH:mm:ss").fromNow();
+       //var date =   localTime;
+       //console.log(story.created_at_i);
+       //var time2= moment().valueOf();
+       //console.log(time2);
        if(story.parent_id == null)
        {
             const mySafeHTML = DOMPurify.sanitize(story.story_text);
             const url = story.url !== null && story.url!=='' ? new URL(story.url):null;
             return (
             <div key={story.objectID} className="story_item">
-                <div className='item_row1'>
+                <div className='item_row_1'>
                     <span><a style={{fontSize:"14px",fontWeight:"500"}} href={story.url}>{story.title}</a></span>
                     {story.url!==null && story.url!=='' ?<span id="story_domain"><a href={url.href}>({url.host})</a></span>:<span id="story_domain"><a>null</a></span>}
                 </div>
@@ -109,16 +119,16 @@ function Search() {
     return(
         <div className='container'>
             <div className='nav_cont'>
-                <nav className='navbar'>
-                    <li id="l1"><a href="#l1"><img src={'https://news.ycombinator.com/y18.gif'} alt="logo" id = "pro_logo"/></a></li>
-                    <li id="pro_name"><a href="#l1">Search Hacker News</a></li>
-                    <li className='nav_item curr_item'><input type="textbox" onChange={handleChange}></input></li>
-                    <li id='login'><a href="#login">login</a></li>
+                <nav className='navbar_2'>
+                    <li id="l1"><a href="#l1"><img src={'https://d1sz9gun5ag95e.cloudfront.net/packs/media/images/logo-hn-search-a822432b.png'} alt="logo" id = "pro_logo_2"/></a></li>
+                    <li ><a href="#l1" id="pro_name_2"><div>Search</div><div>Hacker News</div></a></li>
+                    <li className='nav_item curr_item' style={{width:"60%"}}><input placeholder='Search stories by title,url or author' id="search_box" type="textbox" onChange={handleChange}></input></li>
+                    <li id='login'><a href="#login">Settings ⚙️</a></li>
                 </nav>
             </div>
             <div className='search_cont'>
-                <div>
-                    <p>Search</p>
+                <div className='label_box'>
+                    <div style={{marginRight:"7px"}}>Search</div>
                     <Select
                     value={selectedOpt}
                     onChange={(value) =>{
@@ -135,8 +145,8 @@ function Search() {
                 />
                 </div>
 
-                <div>
-                    <p>by</p>
+                <div className='label_box'>
+                    <div style={{marginRight:"7px"}}>by</div>
                     <Select
                     value={selectedOpt2}
                     onChange={(value) =>{
@@ -152,33 +162,44 @@ function Search() {
                 />
                 </div>
 
-                <div>
-                    <p>for</p>
+                <div className='label_box'>
+                    <div style={{marginRight:"7px"}}>for</div>
                     <Select
                     value={selectedOpt3}
                     onChange={(value) =>{
                         setSelectedOpt3(value);
                     }}
                     options={[
-                        { value: 'chocolate', label: 'Chocolate' },
-                        { value: 'strawberry', label: 'Strawberry' },
-                        { value: 'vanilla', label: 'Vanilla' },
+                        { value: 0, label: 'All time' },
+                        { value: 24, label: 'Last 24h' },
+                        { value: 7*24, label: 'Past Week' },
+                        { value: 31*24, label: 'Past Month' },
+                        { value: 365*24, label: 'Past Year' },
                     ]}
                     className="drop_down"
                 />
                 </div>
-                
+                <div className='res_cont'>
+                    <div style={{marginRight:"7px"}}>{res_count.toLocaleString("en-US")} results</div>
+                    <div style={{marginRight:"25px"}}>({res_time} seconds)</div>
+                    <a href="#l1"><img src={'https://cdn-icons-png.flaticon.com/128/929/929610.png'} alt="logo" id = "share_logo"/></a>
+                </div>
             </div>
-            <div className='res_cont'>
-                <p>{res_count.toLocaleString("en-US")} results</p>
-                <p>({res_time} seconds)</p>
-                <a href="#l1"><img src={'https://cdn-icons-png.flaticon.com/128/929/929610.png'} alt="logo" id = "share_logo"/></a>
-            </div>
+            
             <div className='story_cont'>
                 {resultsDiv}
             </div>
-             
+            <ReactPaginate
+                breakLabel="..."
+                pageCount={totalPages}
+                nextLabel="next"   
+                previousLabel="previous"
+                onPageChange={handlePageClick}
+                containerClassName={"paginationBtns"}
+                activeClassName={"paginationBtnsAct"}
+            /> 
         </div>
+        
     );
 }
 
