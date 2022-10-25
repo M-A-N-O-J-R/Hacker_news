@@ -31,7 +31,7 @@ function Stories() {
        //console.log(localTime); 
        const time = moment(localTime, "dddd, dd MMMM yyyy HH:mm:ss").fromNow();
        //console.log(story.url);
-       const url = story.url !== null ? new URL(story.url):null;
+       const url = story.url !== null && story.url!=='' ? new URL(story.url):null;
        count=count+1;
        return (
        <div key={story.objectID} className="story_item">
@@ -39,7 +39,7 @@ function Stories() {
                 <span className='item_row1_indx'>{(currPage-1)*30+count}.</span>
                 <span className='item_row1_indx'>▲</span>
                 <span><a href={story.url}>{story.title}</a></span>
-                {story.url!==null?<span id="story_domain"><a href={url.href}>({url.host})</a></span>:<span id="story_domain"><a>null</a></span>}
+                {story.url!==null && story.url!=='' ?<span id="story_domain"><a href={url.href}>({url.host})</a></span>:<span id="story_domain"><a>null</a></span>}
             </div>
             <div className='item_row2'>
                 <p><span>{story.points} point by </span></p>
