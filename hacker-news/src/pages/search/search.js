@@ -6,10 +6,13 @@ import Select from 'react-select';
 import DOMPurify from "dompurify";
 import ReactPaginate from 'react-paginate';
 import DatePicker from "react-datepicker";
+import ReactDOM from "react-dom";
+import Mark from "mark.js";
 import "react-datepicker/dist/react-datepicker.css";
 function Search() {
     
 
+    const [flag,setFlag]=useState(true);
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [currPage,setcurrPage]=useState(0);
@@ -21,6 +24,45 @@ function Search() {
     const [selectedOpt,setSelectedOpt]=useState({value: '(story,comment)', label: 'All'});
     const [selectedOpt2,setSelectedOpt2]=useState({ value: 'search', label: 'Popularity' });
     const [selectedOpt3,setSelectedOpt3]=useState({ value: 0, label: 'All time' });  
+    
+    var options = {
+        "element": "mark",
+        "className": "highlight",
+        "exclude": [],
+        "separateWordSearch": false,
+        "accuracy": "partially",
+        "diacritics": true,
+        "synonyms": {},
+        "iframes": false,
+        "iframesTimeout": 5000,
+        "acrossElements": false,
+        "caseSensitive": false,
+        "ignoreJoiners": false,
+        "ignorePunctuation": [],
+        "wildcards": "disabled",
+        "each": function(node){
+            // node is the marked DOM element
+        },
+        "filter": function(textNode, foundTerm, totalCounter, counter){
+            // textNode is the text node which contains the found term
+            // foundTerm is the found search term
+            // totalCounter is a counter indicating the total number of all marks
+            //              at the time of the function call
+            // counter is a counter indicating the number of marks for the found term
+            return true; // must return either true or false
+        },
+        "noMatch": function(term){
+            // term is the not found term
+            setFlag(false);
+        },
+        "done": function(counter){
+            // counter is a counter indicating the total number of all marks
+        },
+        "debug": false,
+        "log": window.console
+    };
+    
+    
     const fetchData_query=()=>{
         
         var time_stamp1=((moment().valueOf()/1000)-(selectedOpt3.value*60*60));
@@ -36,8 +78,8 @@ function Search() {
             time_stamp2=(moment().valueOf()/1000);
         }
         //console.log(moment().valueOf()/1000);
-        console.log(time_stamp1);
-        console.log(time_stamp2);
+        //console.log(time_stamp1);
+        //console.log(time_stamp2);
         fetch(`http://hn.algolia.com/api/v1/${selectedOpt2.value}?&hitsPerPage=30&query=${query}&tags=${selectedOpt.value}&page=${currPage}&numericFilters=created_at_i>=${time_stamp1},created_at_i<=${time_stamp2}`)
         .then(response => response.json())
         .then(data => {
@@ -65,12 +107,18 @@ function Search() {
     }
 
       useEffect(() => {
-        fetchData_query();
-      }, [currPage]);
+
+        var markInstance = new Mark(document.querySelector(".story_cont"));
+        markInstance.unmark({
+            done: () => {
+                markInstance.mark(query,options);
+            }
+            });
+      }, [results]);
 
     useEffect(() => {
         fetchData_query();
-      }, [query,selectedOpt,selectedOpt2,selectedOpt3,startDate,endDate]);
+      }, [query,selectedOpt,selectedOpt2,selectedOpt3,startDate,endDate,currPage]);
  
     const handlePageClick = ({selected})=>{
         //console.log(selected);
@@ -80,7 +128,7 @@ function Search() {
     const handleChange = (event) => {
         setQuery(event.target.value);
       }
-    const resultsDiv = results.map((story)=>{
+    var resultsDiv = results.length>0  ? results.map((story)=>{
        
        var localTime = new Date(story.created_at); 
        const time = moment(localTime, "dddd, dd MMMM yyyy HH:mm:ss").fromNow();
@@ -128,7 +176,7 @@ function Search() {
             )
        }
        
-    })
+    }):<div style={{paddingBottom:"30px","marginTop":"20px"}}> We found no items matching your query for this period.</div>
     return(
         <div className='container'>
             <div className='nav_cont'>
@@ -203,7 +251,7 @@ function Search() {
             <div className='story_cont'>
                 {resultsDiv}
             </div>
-            <ReactPaginate
+            {results.length>0?<ReactPaginate
                 breakLabel="..."
                 pageCount={totalPages}
                 nextLabel="next"   
@@ -211,7 +259,7 @@ function Search() {
                 onPageChange={handlePageClick}
                 containerClassName={"paginationBtns"}
                 activeClassName={"paginationBtnsAct"}
-            /> 
+            />:null }
             
         </div>
         
