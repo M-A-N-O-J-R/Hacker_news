@@ -4,13 +4,14 @@ import './search.css';
 import 'react-dropdown/style.css';
 import Select from 'react-select';
 import DOMPurify from "dompurify";
-import ReactDOM from 'react-dom';
 import ReactPaginate from 'react-paginate';
-
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 function Search() {
     
 
-    
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
     const [currPage,setcurrPage]=useState(0);
     const [totalPages,setTotalPages]=useState(0);
     const [query,setQuery]=useState('');
@@ -22,10 +23,22 @@ function Search() {
     const [selectedOpt3,setSelectedOpt3]=useState({ value: 0, label: 'All time' });  
     const fetchData_query=()=>{
         
-        console.log(moment().valueOf()/1000);
-        var time_stamp=((moment().valueOf()/1000)-(selectedOpt3.value*60*60));
-        console.log(time_stamp);
-        fetch(`http://hn.algolia.com/api/v1/${selectedOpt2.value}?&hitsPerPage=30&query=${query}&tags=${selectedOpt.value}&page=${currPage}&numericFilters=created_at_i>=${time_stamp}`)
+        var time_stamp1=((moment().valueOf()/1000)-(selectedOpt3.value*60*60));
+        var time_stamp2=((moment().valueOf()/1000));
+        if(selectedOpt3.label == "Custom range")
+        {
+            time_stamp1=(moment(startDate).valueOf()/1000)
+            time_stamp2=(moment(endDate).valueOf()/1000);
+        }
+        if(selectedOpt3.label == "All time")
+        {
+            time_stamp1=0;
+            time_stamp2=(moment().valueOf()/1000);
+        }
+        //console.log(moment().valueOf()/1000);
+        console.log(time_stamp1);
+        console.log(time_stamp2);
+        fetch(`http://hn.algolia.com/api/v1/${selectedOpt2.value}?&hitsPerPage=30&query=${query}&tags=${selectedOpt.value}&page=${currPage}&numericFilters=created_at_i>=${time_stamp1},created_at_i<=${time_stamp2}`)
         .then(response => response.json())
         .then(data => {
             
@@ -57,7 +70,7 @@ function Search() {
 
     useEffect(() => {
         fetchData_query();
-      }, [query,selectedOpt,selectedOpt2,selectedOpt3]);
+      }, [query,selectedOpt,selectedOpt2,selectedOpt3,startDate,endDate]);
  
     const handlePageClick = ({selected})=>{
         //console.log(selected);
@@ -175,6 +188,7 @@ function Search() {
                         { value: 7*24, label: 'Past Week' },
                         { value: 31*24, label: 'Past Month' },
                         { value: 365*24, label: 'Past Year' },
+                        { value: 0, label: 'Custom range' }
                     ]}
                     className="drop_down"
                 />
@@ -185,7 +199,7 @@ function Search() {
                     <a href="#l1"><img src={'https://cdn-icons-png.flaticon.com/128/929/929610.png'} alt="logo" id = "share_logo"/></a>
                 </div>
             </div>
-            
+            {selectedOpt3.label === 'Custom range'?<div className='dates_cont'><span>From</span><DatePicker selected={startDate} onChange={(date) => setStartDate(date)} /><span>To</span><DatePicker selected={endDate} onChange={(date) => setEndDate(date)} /></div>:null}
             <div className='story_cont'>
                 {resultsDiv}
             </div>
@@ -198,6 +212,7 @@ function Search() {
                 containerClassName={"paginationBtns"}
                 activeClassName={"paginationBtnsAct"}
             /> 
+            
         </div>
         
     );

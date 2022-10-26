@@ -213,3 +213,13 @@ button:focus {
     background-color: rgb(1, 21, 30);
     color: #F6F6EF;
 }
+.dates_cont{
+    font-size: 13px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 45%;
+
+
+}
